@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شركة طوارئ الخليج للأمن والسلامة</title>
+    <title id="pageTitle">شركة طوارئ الخليج للأمن والسلامة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -53,7 +53,6 @@
         .whatsapp-float {
             position: fixed;
             bottom: 20px;
-            left: 20px;
             background-color: #25d366;
             color: white;
             padding: 12px 20px;
@@ -70,13 +69,16 @@
         .whatsapp-float:hover {
             transform: scale(1.05);
         }
+        /* موضع زر الواتساب حسب اتجاه الصفحة */
+        html[dir="rtl"] .whatsapp-float { left: 20px; }
+        html[dir="ltr"] .whatsapp-float { right: 20px; }
     </style>
 </head>
 <body>
 
     <!-- الشريط المتحرك -->
     <div class="marquee-container">
-        <div class="marquee-text-rtl">
+        <div class="marquee-text-rtl" id="marqueeText">
             🎉 قسم المبيعات: طه الكيلاني - 0539356009 | شركة طوارئ الخليج للأمن والسلامة ومكافحة الحريق 🛡 | نسعد بخدمتكم وتلبية كافة احتياجاتكم الهندسية ✨
         </div>
     </div>
@@ -85,18 +87,21 @@
     <header class="header-bg text-white py-6 px-4 shadow-md relative">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             
-            <!-- التاريخ الهجري والميلادي والوقت -->
-            <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/20 text-xs md:text-sm font-bold text-slate-200 flex flex-col md:flex-row items-center gap-2 text-center md:text-right">
-                <span id="hijriDateDisplay">📅 جاري تحميل التاريخ الهجري...</span>
-                <span class="hidden md:inline text-red-400">|</span>
-                <span id="gregorianDateDisplay">🗓 الوقت والتاريخ...</span>
+            <!-- زر تبديل اللغة والتاريخ -->
+            <div class="flex flex-col md:flex-row items-center gap-3">
+                <button onclick="toggleLanguage()" id="langBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-black shadow transition flex items-center gap-2">
+                    🌐 English / عربي
+                </button>
+                <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-xs md:text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <span id="gregorianDateDisplay">🗓 التاريخ والوقت...</span>
+                </div>
             </div>
 
             <!-- الشعار واسم الشركة -->
-            <div class="flex items-center gap-3">
-                <div class="text-center md:text-right">
-                    <h1 class="text-2xl md:text-3xl font-black tracking-wide">شركة طوارئ الخليج</h1>
-                    <p class="text-xs text-slate-300 font-medium">للأمن والسلامة وأعمال الدفاع المدني</p>
+            <div class="flex items-center gap-3 text-center md:text-right">
+                <div>
+                    <h1 id="companyName" class="text-2xl md:text-3xl font-black tracking-wide">شركة طوارئ الخليج</h1>
+                    <p id="companySub" class="text-xs text-slate-300 font-medium">للأمن والسلامة وأعمال الدفاع المدني</p>
                 </div>
                 <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-xl font-black text-white shadow-lg">
                     TK
@@ -105,8 +110,8 @@
 
             <!-- مشغل سورة البقرة -->
             <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 flex items-center gap-3">
-                <div class="text-right">
-                    <span class="text-xs text-slate-300 block font-bold">تشغيل سورة البقرة</span>
+                <div class="text-right" id="audioTextContainer">
+                    <span id="audioTitleLabel" class="text-xs text-slate-300 block font-bold">تشغيل سورة البقرة</span>
                     <span id="audioStatusText" class="text-xs text-slate-300 font-bold">متوقف (اضغط للتشغيل)</span>
                 </div>
                 <button onclick="toggleAudio()" id="audioToggleBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center shadow transition text-lg font-bold">
@@ -117,15 +122,15 @@
 
         <!-- لوحة التحكم الإدارية -->
         <div class="text-center mt-6">
-            <div class="relative inline-block text-right">
+            <div class="relative inline-block text-right" id="adminDropdownWrapper">
                 <button onclick="checkPassword()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-xl shadow transition text-xs flex items-center gap-2">
-                    <span>🔒</span> خيارات الإدارة والتحكم (محمي برقم سري) ▼
+                    <span id="adminBtnText">🔒 خيارات الإدارة والتحكم (محمي برقم سري) ▼</span>
                 </button>
-                <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-right text-slate-800">
-                    <button onclick="openNewItemModal()" class="w-full text-right px-4 py-3 text-xs font-bold hover:bg-slate-100 flex items-center gap-2 border-b">
+                <div id="adminDropdown" class="hidden absolute mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-slate-800">
+                    <button onclick="openNewItemModal()" id="adminOpt1" class="w-full px-4 py-3 text-xs font-bold hover:bg-slate-100 flex items-center gap-2 border-b">
                         <span>➕</span> إضافة صور ومعرض للبطاقة
                     </button>
-                    <button onclick="openDeleteModal()" class="w-full text-right px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2">
+                    <button onclick="openDeleteModal()" id="adminOpt2" class="w-full px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2">
                         <span>🗑️</span> حذف عنصر
                     </button>
                 </div>
@@ -133,7 +138,7 @@
         </div>
     </header>
 
-    <!-- عنصر الصوت (سورة البقرة كاملة - رابط مباشر وثابت) -->
+    <!-- عنصر الصوت -->
     <audio id="quranAudio" loop preload="auto">
         <source src="https://server11.mp3quran.net/sds/002.mp3" type="audio/mpeg">
     </audio>
@@ -143,18 +148,18 @@
         
         <!-- نبذة عن الشركة -->
         <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 mb-10">
-            <h2 class="text-2xl font-black text-slate-800 mb-4 text-center flex items-center justify-center gap-2">
+            <h2 id="aboutTitle" class="text-2xl font-black text-slate-800 mb-4 text-center flex items-center justify-center gap-2">
                 <span>🛡️</span> نبذة عن الشركة
             </h2>
-            <p class="text-slate-600 text-lg leading-relaxed text-center max-w-3xl mx-auto font-medium">
+            <p id="aboutDesc" class="text-slate-600 text-lg leading-relaxed text-center max-w-3xl mx-auto font-medium">
                 تأسست شركة طوارئ الخليج في الرياض عام 2018، وهي رائدة في تقديم حلول الأمن والسلامة، توريد وتركيب وصيانة أنظمة الإنذار ومكافحة الحريق بأعلى معايير الجودة والكفاءة الفنية.
             </p>
         </section>
 
         <!-- قسم خدماتنا والبطاقات التفاعلية -->
         <section class="mb-10">
-            <h2 class="text-2xl font-black text-slate-800 mb-2 text-center">⚙️ خدماتنا والأنظمة المعتمدة للشركة</h2>
-            <p class="text-slate-500 text-center mb-6 text-sm">اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل</p>
+            <h2 id="servicesHeading" class="text-2xl font-black text-slate-800 mb-2 text-center">⚙️ خدماتنا والأنظمة المعتمدة للشركة</h2>
+            <p id="servicesSub" class="text-slate-500 text-center mb-6 text-sm">اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل</p>
             
             <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- تعبئة ديناميكية -->
@@ -164,15 +169,15 @@
         <!-- قسم التواصل السريع -->
         <section class="bg-slate-900 text-white rounded-2xl p-8 text-center shadow-sm relative overflow-hidden">
             <div class="relative z-10">
-                <h3 class="text-2xl font-black mb-3 text-red-500">📞 تواصل مع قسم المبيعات مباشرة</h3>
-                <p class="text-slate-300 mb-6 font-medium">نحن جاهزون للإجابة على استفساراتكم وتقديم أفضل العروض الهندسية لمشاريعكم</p>
+                <h3 id="contactHeading" class="text-2xl font-black mb-3 text-red-500">📞 تواصل مع قسم المبيعات مباشرة</h3>
+                <p id="contactSub" class="text-slate-300 mb-6 font-medium">نحن جاهزون للإجابة على استفساراتكم وتقديم أفضل العروض الهندسية لمشاريعكم</p>
                 <div class="inline-block bg-white/10 border border-white/20 px-8 py-4 rounded-xl mb-6">
-                    <p class="text-sm text-slate-300">مسؤول المبيعات</p>
-                    <p class="text-2xl font-black text-white">م. طه الكيلاني</p>
+                    <p id="salesPersonTitle" class="text-sm text-slate-300">مسؤول المبيعات</p>
+                    <p class="text-2xl font-black text-white">م. طه الكيلاني / Eng. Taha Al-Kilani</p>
                     <p class="text-lg font-bold text-emerald-400 mt-1" dir="ltr">0539356009</p>
                 </div>
                 <div>
-                    <a href="https://wa.me/966539356009" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-8 py-3 rounded-xl shadow transition inline-flex items-center gap-2 text-lg">
+                    <a href="https://wa.me/966539356009" target="_blank" id="whatsappBtnText" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-8 py-3 rounded-xl shadow transition inline-flex items-center gap-2 text-lg">
                         <span>💬</span> راسلنا عبر الواتساب فوراً
                     </a>
                 </div>
@@ -181,19 +186,17 @@
 
     </main>
 
-    <!-- نافذة تفاصيل البطاقة ومعرض الصور التفاعلي -->
+    <!-- نافذة تفاصيل البطاقة -->
     <div id="detailsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
-            <button onclick="closeDetailsModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
+        <div id="modalContentBox" class="bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
+            <button onclick="closeDetailsModal()" class="absolute top-4 font-bold text-3xl text-slate-400 hover:text-slate-700" id="modalCloseBtn">&times;</button>
             <h2 id="modalTitle" class="text-2xl font-black text-slate-800 mb-3 border-b pb-2 text-red-600">عنوان الخدمة</h2>
             <p id="modalDesc" class="text-slate-600 mb-6 leading-relaxed font-medium">وصف تفصيلي للخدمة...</p>
             
-            <h3 class="font-extrabold text-lg text-slate-800 mb-3 flex items-center gap-2">
-                <span>🖼️️</span> معرض صور المشاريع والأعمال المعتمدة:
+            <h3 id="modalGalleryTitle" class="font-extrabold text-lg text-slate-800 mb-3 flex items-center gap-2">
+                <span>🖼</span> معرض صور المشاريع والأعمال المعتمدة:
             </h3>
-            <div id="modalGallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- معرض الصور -->
-            </div>
+            <div id="modalGallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
         </div>
     </div>
 
@@ -202,13 +205,10 @@
         <div class="bg-white rounded-2xl max-w-xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
             <button onclick="closeNewItemModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
             <h3 class="text-xl font-black text-slate-800 mb-4 border-b pb-2">➕ إضافة صور وتحديث تفاصيل البطاقة</h3>
-            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">اختر البطاقة / الأيقونة:</label>
-                    <select id="newTitleSelect" onchange="loadItemData()" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800 bg-white">
-                        <!-- تعبئة ديناميكية -->
-                    </select>
+                    <select id="newTitleSelect" onchange="loadItemData()" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800 bg-white"></select>
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">تحديث الوصف التفصيلي:</label>
@@ -234,13 +234,10 @@
         <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl text-right">
             <button onclick="closeDeleteModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
             <h3 class="text-xl font-black text-red-600 mb-4 border-b pb-2">🗑 حذف عنصر من الموقع</h3>
-            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">اختر العنصر المراد حذفه:</label>
-                    <select id="deleteSelect" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800">
-                        <!-- تعبئة ديناميكية -->
-                    </select>
+                    <select id="deleteSelect" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800"></select>
                 </div>
                 <button onclick="deleteItem()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow transition">
                     ⚠ تأكيد الحذف نهائياً
@@ -251,19 +248,77 @@
 
     <!-- زر الواتساب العائم -->
     <a href="https://wa.me/966539356009" target="_blank" class="whatsapp-float">
-        <span class="text-xl">💬</span> راسل المبيعات
+        <span class="text-xl">💬</span> <span id="whatsappFloatText">راسل المبيعات</span>
     </a>
 
     <!-- تذييل الصفحة -->
-    <footer class="bg-slate-900 text-slate-400 text-center py-4 border-t border-slate-800 text-sm">
+    <footer id="footerText" class="bg-slate-900 text-slate-400 text-center py-4 border-t border-slate-800 text-sm">
         جميع الحقوق محفوظة © شركة طوارئ الخليج 2026
     </footer>
 
     <script>
+        let currentLang = 'ar';
+
+        const translations = {
+            ar: {
+                pageTitle: "شركة طوارئ الخليج للأمن والسلامة",
+                marqueeText: "🎉 قسم المبيعات: طه الكيلاني - 0539356009 | شركة طوارئ الخليج للأمن والسلامة ومكافحة الحريق 🛡 | نسعد بخدمتكم وتلبية كافة احتياجاتكم الهندسية ✨",
+                companyName: "شركة طوارئ الخليج",
+                companySub: "للأمن والسلامة وأعمال الدفاع المدني",
+                audioTitleLabel: "تشغيل سورة البقرة",
+                audioStatusPlay: "متوقف (اضغط للتشغيل)",
+                audioStatusRun: "تعمل سورة البقرة 🎧",
+                audioStatusPause: "متوقف مؤقتاً",
+                adminBtnText: "🔒 خيارات الإدارة والتحكم (محمي برقم سري) ▼",
+                adminOpt1: "➕ إضافة صور ومعرض للبطاقة",
+                adminOpt2: "🗑️ حذف عنصر",
+                aboutTitle: "نبذة عن الشركة",
+                aboutDesc: "تأسست شركة طوارئ الخليج في الرياض عام 2018، وهي رائدة في تقديم حلول الأمن والسلامة، توريد وتركيب وصيانة أنظمة الإنذار ومكافحة الحريق بأعلى معايير الجودة والكفاءة الفنية.",
+                servicesHeading: "⚙️ خدماتنا والأنظمة المعتمدة للشركة",
+                servicesSub: "اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل",
+                contactHeading: "📞 تواصل مع قسم المبيعات مباشرة",
+                contactSub: "نحن جاهزون للإجابة على استفساراتكم وتقديم أفضل العروض الهندسية لمشاريعكم",
+                salesPersonTitle: "مسؤول المبيعات",
+                whatsappBtnText: "راسلنا عبر الواتساب فوراً",
+                whatsappFloatText: "راسل المبيعات",
+                footerText: "جميع الحقوق محفوظة © شركة طوارئ الخليج 2026",
+                galleryLabel: "معرض الصور",
+                clickToView: "اضغط للعرض ←"
+            },
+            en: {
+                pageTitle: "Gulf Emergency Safety & Security Co.",
+                marqueeText: "🎉 Sales Dept: Taha Al-Kilani - 0539356009 | Gulf Emergency Company for Safety, Security & Fire Fighting 🛡 | We are delighted to serve you ✨",
+                companyName: "Gulf Emergency Co.",
+                companySub: "Safety, Security & Civil Defense Works",
+                audioTitleLabel: "Play Surah Al-Baqarah",
+                audioStatusPlay: "Stopped (Click to Play)",
+                audioStatusRun: "Playing Surah Al-Baqarah 🎧",
+                audioStatusPause: "Paused",
+                adminBtnText: "🔒 Admin & Control Options (Password Protected) ▼",
+                adminOpt1: "➕ Add Images & Gallery to Card",
+                adminOpt2: "🗑️ Delete Item",
+                aboutTitle: "About The Company",
+                aboutDesc: "Gulf Emergency Company was established in Riyadh in 2018, leading in safety and security solutions, supplying, installing, and maintaining fire alarm and suppression systems with the highest quality standards.",
+                servicesHeading: "⚙️ Our Services & Approved Systems",
+                servicesSub: "Click on any card to view details and full project gallery",
+                contactHeading: "📞 Contact Sales Department Directly",
+                contactSub: "We are ready to answer your inquiries and provide the best engineering offers for your projects",
+                salesPersonTitle: "Sales Representative",
+                whatsappBtnText: "Chat via WhatsApp Now",
+                whatsappFloatText: "Contact Sales",
+                footerText: "All Rights Reserved © Gulf Emergency Company 2026",
+                galleryLabel: "Photo Gallery",
+                clickToView: "Click to View →"
+            }
+        };
+
         let dbData = {
             alarm: {
-                title: "أنظمة الكشف والإنذار عن الحريق",
-                desc: "تقديم خدمات متكاملة لتوريد وتركيب وتشغيل وصيانة جميع أنظمة الكشف والإنذار المبكر طبقاً لأعلى المعايير الهندسية ومعايير الدفاع المدني.",
+                title: { ar: "أنظمة الكشف والإنذار عن الحريق", en: "Fire Detection & Alarm Systems" },
+                desc: { 
+                    ar: "تقديم خدمات متكاملة لتوريد وتركيب وتشغيل وصيانة جميع أنظمة الكشف والإنذار المبكر طبقاً لأعلى المعايير الهندسية ومعايير الدفاع المدني.",
+                    en: "Providing integrated services for supply, installation, operation and maintenance of all early detection and alarm systems according to the highest engineering and civil defense standards."
+                },
                 img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
                 gallery: [
                     "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
@@ -271,8 +326,11 @@
                 ]
             },
             fighting: {
-                title: "أنظمة مكافحة الحريق",
-                desc: "نقدم حلولاً معتمدة لمكافحة الحريق والوقاية منه (شبكات الرش الآلي، طفايات الحريق، مضخات الحريق) وفق المواصفات العالمية.",
+                title: { ar: "أنظمة مكافحة الحريق", en: "Fire Suppression Systems" },
+                desc: {
+                    ar: "نقدم حلولاً معتمدة لمكافحة الحريق والوقاية منه (شبكات الرش الآلي، طفايات الحريق، مضخات الحريق) وفق المواصفات العالمية.",
+                    en: "Offering certified solutions for fire fighting and prevention (sprinkler networks, fire extinguishers, fire pumps) in accordance with international specifications."
+                },
                 img: "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
                 gallery: [
                     "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
@@ -280,8 +338,11 @@
                 ]
             },
             maintenance: {
-                title: "صيانة وتشغيل الأنظمة",
-                desc: "أعمال الصيانة الدورية والشاملة لأنظمة الإنذار ومكافحة الحريق مع تقديم شهادات الفحص المعتمدة للجهات الحكومية والخاصة.",
+                title: { ar: "صيانة وتشغيل الأنظمة", en: "Systems Maintenance & Operation" },
+                desc: {
+                    ar: "أعمال الصيانة الدورية والشاملة لأنظمة الإنذار ومكافحة الحريق مع تقديم شهادات الفحص المعتمدة للجهات الحكومية والخاصة.",
+                    en: "Periodic and comprehensive maintenance works for alarm and fire fighting systems with approved inspection certificates for government and private entities."
+                },
                 img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
                 gallery: [
                     "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
@@ -289,45 +350,84 @@
                 ]
             },
             gov: {
-                title: "القطاعات الحكومية والعسكرية",
-                desc: "نفذت الشركة مشاريع حيوية كبرى للجهات الحكومية والعسكرية بأعلى درجات الموثوقية والأمان الفني.",
+                title: { ar: "القطاعات الحكومية والعسكرية", en: "Government & Military Sectors" },
+                desc: {
+                    ar: "نفذت الشركة مشاريع حيوية كبرى للجهات الحكومية والعسكرية بأعلى درجات الموثوقية والأمان الفني.",
+                    en: "The company has executed major vital projects for government and military authorities with the highest degrees of reliability and technical safety."
+                },
                 img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-                gallery: [
-                    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
-                ]
+                gallery: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"]
             },
             edu: {
-                title: "القطاع التعليمي والتدريبي",
-                desc: "تنفيذ وتطوير شبكات الإنذار ومكافحة الحريق في كبرى الجامعات والكليات والمدارس.",
+                title: { ar: "القطاع التعليمي والتدريبي", en: "Educational & Training Sector" },
+                desc: {
+                    ar: "تنفيذ وتطوير شبكات الإنذار ومكافحة الحريق في كبرى الجامعات والكليات والمدارس.",
+                    en: "Implementing and developing alarm and fire fighting networks in major universities, colleges, and schools."
+                },
                 img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80",
-                gallery: [
-                    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80"
-                ]
+                gallery: ["https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80"]
             },
             mall: {
-                title: "المراكز التجارية والمولات",
-                desc: "توريد وتركيب وصيانة أنظمة السلامة المتكاملة للمراكز التجارية الكبرى والأسواق المركزية.",
+                title: { ar: "المراكز التجارية والمولات", en: "Commercial Centers & Malls" },
+                desc: {
+                    ar: "توريد وتركيب وصيانة أنظمة السلامة المتكاملة للمراكز التجارية الكبرى والأسواق المركزية.",
+                    en: "Supply, installation and maintenance of integrated safety systems for major commercial centers and hypermarkets."
+                },
                 img: "https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80",
-                gallery: [
-                    "https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80"
-                ]
+                gallery: ["https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80"]
             }
         };
 
         let tempGalleryImages = [];
 
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const root = document.getElementById('htmlRoot');
+            root.setAttribute('lang', currentLang);
+            root.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+            // تعديل مكان محاذاة القوائم المنسدلة بناء على اللغة
+            const dropdown = document.getElementById('adminDropdown');
+            const modalContentBox = document.getElementById('modalContentBox');
+            if (currentLang === 'ar') {
+                dropdown.className = "hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-right text-slate-800";
+                modalContentBox.className = "bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right";
+            } else {
+                dropdown.className = "hidden absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-left text-slate-800";
+                modalContentBox.className = "bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-left";
+            }
+
+            updateStaticTexts();
+            renderUI();
+        }
+
+        function updateStaticTexts() {
+            const t = translations[currentLang];
+            document.getElementById('pageTitle').innerText = t.pageTitle;
+            document.getElementById('marqueeText').innerText = t.marqueeText;
+            document.getElementById('companyName').innerText = t.companyName;
+            document.getElementById('companySub').innerText = t.companySub;
+            document.getElementById('audioTitleLabel').innerText = t.audioTitleLabel;
+            document.getElementById('adminBtnText').innerText = t.adminBtnText;
+            document.getElementById('adminOpt1').innerHTML = `<span>➕</span> ${t.adminOpt1.replace('➕ ', '')}`;
+            document.getElementById('adminOpt2').innerHTML = `<span>🗑️</span> ${t.adminOpt2.replace('🗑️ ', '')}`;
+            document.getElementById('aboutTitle').innerHTML = `<span>🛡️</span> ${t.aboutTitle}`;
+            document.getElementById('aboutDesc').innerText = t.aboutDesc;
+            document.getElementById('servicesHeading').innerText = t.servicesHeading;
+            document.getElementById('servicesSub').innerText = t.servicesSub;
+            document.getElementById('contactHeading').innerText = t.contactHeading;
+            document.getElementById('contactSub').innerText = t.contactSub;
+            document.getElementById('salesPersonTitle').innerText = t.salesPersonTitle;
+            document.getElementById('whatsappBtnText').innerHTML = `<span>💬</span> ${t.whatsappBtnText}`;
+            document.getElementById('whatsappFloatText').innerText = t.whatsappFloatText;
+            document.getElementById('footerText').innerText = t.footerText;
+        }
+
         function updateDateTime() {
             const now = new Date();
-            let optionsGregorian = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-            document.getElementById('gregorianDateDisplay').innerText = "🗓️ " + now.toLocaleDateString('ar-SA', optionsGregorian);
-
-            try {
-                let optionsHijri = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
-                let hijriStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', optionsHijri).format(now);
-                document.getElementById('hijriDateDisplay').innerText = "🌙 " + hijriStr;
-            } catch (e) {
-                document.getElementById('hijriDateDisplay').innerText = "🌙 التقويم الهجري غير متوفر";
-            }
+            let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            let locale = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+            document.getElementById('gregorianDateDisplay').innerText = "🗓️ " + now.toLocaleDateString(locale, options);
         }
         setInterval(updateDateTime, 1000);
         updateDateTime();
@@ -336,29 +436,30 @@
             let audio = document.getElementById('quranAudio');
             let btn = document.getElementById('audioToggleBtn');
             let statusText = document.getElementById('audioStatusText');
+            const t = translations[currentLang];
 
             if (audio.paused) {
                 audio.play().then(() => {
                     btn.innerText = "⏸";
-                    statusText.innerText = "تعمل سورة البقرة 🎧";
+                    statusText.innerText = t.audioStatusRun;
                     statusText.className = "text-xs text-emerald-400 font-bold";
                 }).catch(err => {
-                    alert("تعذر تشغيل الصوت تلقائياً، يرجى النقر مرة أخرى على زر التشغيل.");
+                    alert(currentLang === 'ar' ? "تعذر تشغيل الصوت تلقائياً، يرجى النقر مرة أخرى على زر التشغيل." : "Audio playback failed automatically, please click again.");
                 });
             } else {
                 audio.pause();
                 btn.innerText = "▶";
-                statusText.innerText = "متوقف مؤقتاً";
+                statusText.innerText = t.audioStatusPause;
                 statusText.className = "text-xs text-slate-300 font-bold";
             }
         }
 
         function checkPassword() {
-            let pass = prompt("أدخل الرقم السري للوصول إلى لوحة التحكم:");
+            let pass = prompt(currentLang === 'ar' ? "أدخل الرقم السري للوصول إلى لوحة التحكم:" : "Enter password for admin access:");
             if (pass === "2026") {
                 toggleDropdown();
             } else if (pass !== null) {
-                alert("الرقم السري غير صحيح!");
+                alert(currentLang === 'ar' ? "الرقم السري غير صحيح!" : "Incorrect password!");
             }
         }
 
@@ -369,20 +470,23 @@
 
         function renderUI() {
             let servicesHTML = '';
+            const t = translations[currentLang];
             for (let key in dbData) {
                 let item = dbData[key];
+                let title = item.title[currentLang];
+                let desc = item.desc[currentLang];
                 servicesHTML += `
                     <div onclick="openDetailsModal('${key}')" class="bg-white rounded-2xl shadow-sm border border-slate-200 card-hover flex flex-col justify-between border-t-4 border-t-red-600 overflow-hidden">
                         <div>
-                            <img src="${item.img}" alt="${item.title}" class="w-full h-44 object-cover border-b border-slate-100">
+                            <img src="${item.img}" alt="${title}" class="w-full h-44 object-cover border-b border-slate-100">
                             <div class="p-6">
-                                <h3 class="font-extrabold text-lg text-slate-800 mb-2">${item.title}</h3>
-                                <p class="text-slate-600 text-sm leading-relaxed line-clamp-2">${item.desc}</p>
+                                <h3 class="font-extrabold text-lg text-slate-800 mb-2">${title}</h3>
+                                <p class="text-slate-600 text-sm leading-relaxed line-clamp-2">${desc}</p>
                             </div>
                         </div>
                         <div class="px-6 pb-4 flex justify-between items-center text-xs font-bold">
-                            <span class="text-red-600 bg-red-50 px-3 py-1 rounded-full">📁 معرض الصور (${item.gallery.length})</span>
-                            <span class="text-slate-400">اضغط للعرض ←</span>
+                            <span class="text-red-600 bg-red-50 px-3 py-1 rounded-full">📁 ${t.galleryLabel} (${item.gallery.length})</span>
+                            <span class="text-slate-400">${t.clickToView}</span>
                         </div>
                     </div>
                 `;
@@ -393,14 +497,16 @@
         function openDetailsModal(key) {
             let item = dbData[key];
             if(!item) return;
-            document.getElementById('modalTitle').innerText = item.title;
-            document.getElementById('modalDesc').innerText = item.desc;
+            const t = translations[currentLang];
+            document.getElementById('modalTitle').innerText = item.title[currentLang];
+            document.getElementById('modalDesc').innerText = item.desc[currentLang];
+            document.getElementById('modalGalleryTitle').innerHTML = `<span>🖼</span> ${t.galleryLabel}:`;
 
             let galleryHTML = '';
             item.gallery.forEach(imgUrl => {
                 galleryHTML += `
                     <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
-                        <img src="${imgUrl}" alt="صورة المشروع" class="w-full h-48 object-cover hover:scale-105 transition duration-300">
+                        <img src="${imgUrl}" alt="Project Image" class="w-full h-48 object-cover hover:scale-105 transition duration-300">
                     </div>
                 `;
             });
@@ -424,7 +530,7 @@
             for (let key in dbData) {
                 let opt = document.createElement('option');
                 opt.value = key;
-                opt.text = dbData[key].title;
+                opt.text = dbData[key].title[currentLang];
                 titleSelect.appendChild(opt);
             }
             loadItemData();
@@ -437,7 +543,7 @@
             let selectedKey = document.getElementById('newTitleSelect').value;
             if(selectedKey && dbData[selectedKey]) {
                 let item = dbData[selectedKey];
-                document.getElementById('newDesc').value = item.desc;
+                document.getElementById('newDesc').value = item.desc[currentLang];
                 tempGalleryImages = [...item.gallery];
                 renderPreviewGallery();
                 document.getElementById('newImageUploader').value = '';
@@ -486,11 +592,11 @@
             let selectedKey = document.getElementById('newTitleSelect').value;
             let desc = document.getElementById('newDesc').value;
             if(!desc) {
-                alert("يرجى إدخال الوصف التفصيلي");
+                alert(currentLang === 'ar' ? "يرجى إدخال الوصف التفصيلي" : "Please enter description");
                 return;
             }
             if(dbData[selectedKey]) {
-                dbData[selectedKey].desc = desc;
+                dbData[selectedKey].desc[currentLang] = desc;
                 dbData[selectedKey].gallery = [...tempGalleryImages];
                 if(tempGalleryImages.length > 0) {
                     dbData[selectedKey].img = tempGalleryImages[0];
@@ -498,7 +604,7 @@
             }
             closeNewItemModal();
             renderUI();
-            alert("تم حفظ التعديلات وتحديث معرض الصور للبطاقة بنجاح!");
+            alert(currentLang === 'ar' ? "تم حفظ التعديلات وتحديث معرض الصور للبطاقة بنجاح!" : "Changes saved successfully!");
         }
 
         function openDeleteModal() {
@@ -508,7 +614,7 @@
             for (let key in dbData) {
                 let opt = document.createElement('option');
                 opt.value = key;
-                opt.text = dbData[key].title;
+                opt.text = dbData[key].title[currentLang];
                 select.appendChild(opt);
             }
             let modal = document.getElementById('deleteModal');
@@ -528,7 +634,7 @@
                 delete dbData[key];
                 closeDeleteModal();
                 renderUI();
-                alert("تم حذف العنصر بنجاح!");
+                alert(currentLang === 'ar' ? "تم حذف العنصر بنجاح!" : "Item deleted successfully!");
             }
         }
 
