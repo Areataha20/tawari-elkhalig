@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شركة طوارئ الخليج للأمن والسلامة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            background: #dc2626;
+            color: #ffffff;
+            padding: 10px 0;
+            border-bottom: 3px solid #991b1b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .marquee-text-rtl {
+            display: inline-block;
+            animation: marqueeRTL 25s linear infinite;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        @keyframes marqueeRTL {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+            border-bottom: 5px solid #dc2626;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #25d366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشريط المتحرك -->
+    <div class="marquee-container">
+        <div class="marquee-text-rtl">
+            🎉 قسم المبيعات: طه الكيلاني - 0539356009 | شركة طوارئ الخليج للأمن والسلامة ومكافحة الحريق 🛡 | نسعد بخدمتكم وتلبية كافة احتياجاتكم الهندسية ✨
+        </div>
+    </div>
+
+    <!-- رأس الصفحة -->
+    <header class="header-bg text-white py-6 px-4 shadow-md relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- التاريخ الهجري والميلادي والوقت -->
+            <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/20 text-xs md:text-sm font-bold text-slate-200 flex flex-col md:flex-row items-center gap-2 text-center md:text-right">
+                <span id="hijriDateDisplay">📅 جاري تحميل التاريخ الهجري...</span>
+                <span class="hidden md:inline text-red-400">|</span>
+                <span id="gregorianDateDisplay">🗓 الوقت والتاريخ...</span>
+            </div>
+
+            <!-- الشعار واسم الشركة -->
+            <div class="flex items-center gap-3">
+                <div class="text-center md:text-right">
+                    <h1 class="text-2xl md:text-3xl font-black tracking-wide">شركة طوارئ الخليج</h1>
+                    <p class="text-xs text-slate-300 font-medium">للأمن والسلامة وأعمال الدفاع المدني</p>
+                </div>
+                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-xl font-black text-white shadow-lg">
+                    TK
+                </div>
+            </div>
+
+            <!-- مشغل سورة البقرة -->
+            <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 flex items-center gap-3">
+                <div class="text-right">
+                    <span class="text-xs text-slate-300 block font-bold">تشغيل سورة البقرة</span>
+                    <span id="audioStatusText" class="text-xs text-slate-300 font-bold">متوقف (اضغط للتشغيل)</span>
+                </div>
+                <button onclick="toggleAudio()" id="audioToggleBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center shadow transition text-lg font-bold">
+                    ▶
+                </button>
+            </div>
+        </div>
+
+        <!-- لوحة التحكم الإدارية -->
+        <div class="text-center mt-6">
+            <div class="relative inline-block text-right">
+                <button onclick="checkPassword()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-xl shadow transition text-xs flex items-center gap-2">
+                    <span>🔒</span> خيارات الإدارة والتحكم (محمي برقم سري) ▼
+                </button>
+                <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-right text-slate-800">
+                    <button onclick="openNewItemModal()" class="w-full text-right px-4 py-3 text-xs font-bold hover:bg-slate-100 flex items-center gap-2 border-b">
+                        <span>➕</span> إضافة صور ومعرض للبطاقة
+                    </button>
+                    <button onclick="openDeleteModal()" class="w-full text-right px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2">
+                        <span>🗑️</span> حذف عنصر
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- عنصر الصوت (سورة البقرة كاملة - رابط مباشر وثابت) -->
+    <audio id="quranAudio" loop preload="auto">
+        <source src="https://server11.mp3quran.net/sds/002.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+        
+        <!-- نبذة عن الشركة -->
+        <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 mb-10">
+            <h2 class="text-2xl font-black text-slate-800 mb-4 text-center flex items-center justify-center gap-2">
+                <span>🛡️</span> نبذة عن الشركة
+            </h2>
+            <p class="text-slate-600 text-lg leading-relaxed text-center max-w-3xl mx-auto font-medium">
+                تأسست شركة طوارئ الخليج في الرياض عام 2018، وهي رائدة في تقديم حلول الأمن والسلامة، توريد وتركيب وصيانة أنظمة الإنذار ومكافحة الحريق بأعلى معايير الجودة والكفاءة الفنية.
+            </p>
+        </section>
+
+        <!-- قسم خدماتنا والبطاقات التفاعلية -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-black text-slate-800 mb-2 text-center">⚙️ خدماتنا والأنظمة المعتمدة للشركة</h2>
+            <p class="text-slate-500 text-center mb-6 text-sm">اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل</p>
+            
+            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- تعبئة ديناميكية -->
+            </div>
+        </section>
+
+        <!-- قسم التواصل السريع -->
+        <section class="bg-slate-900 text-white rounded-2xl p-8 text-center shadow-sm relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-2xl font-black mb-3 text-red-500">📞 تواصل مع قسم المبيعات مباشرة</h3>
+                <p class="text-slate-300 mb-6 font-medium">نحن جاهزون للإجابة على استفساراتكم وتقديم أفضل العروض الهندسية لمشاريعكم</p>
+                <div class="inline-block bg-white/10 border border-white/20 px-8 py-4 rounded-xl mb-6">
+                    <p class="text-sm text-slate-300">مسؤول المبيعات</p>
+                    <p class="text-2xl font-black text-white">م. طه الكيلاني</p>
+                    <p class="text-lg font-bold text-emerald-400 mt-1" dir="ltr">0539356009</p>
+                </div>
+                <div>
+                    <a href="https://wa.me/966539356009" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-8 py-3 rounded-xl shadow transition inline-flex items-center gap-2 text-lg">
+                        <span>💬</span> راسلنا عبر الواتساب فوراً
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- نافذة تفاصيل البطاقة ومعرض الصور التفاعلي -->
+    <div id="detailsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
+            <button onclick="closeDetailsModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
+            <h2 id="modalTitle" class="text-2xl font-black text-slate-800 mb-3 border-b pb-2 text-red-600">عنوان الخدمة</h2>
+            <p id="modalDesc" class="text-slate-600 mb-6 leading-relaxed font-medium">وصف تفصيلي للخدمة...</p>
+            
+            <h3 class="font-extrabold text-lg text-slate-800 mb-3 flex items-center gap-2">
+                <span>🖼️️</span> معرض صور المشاريع والأعمال المعتمدة:
+            </h3>
+            <div id="modalGallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- معرض الصور -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة لوحة التحكم -->
+    <div id="newItemModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
+            <button onclick="closeNewItemModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
+            <h3 class="text-xl font-black text-slate-800 mb-4 border-b pb-2">➕ إضافة صور وتحديث تفاصيل البطاقة</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">اختر البطاقة / الأيقونة:</label>
+                    <select id="newTitleSelect" onchange="loadItemData()" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800 bg-white">
+                        <!-- تعبئة ديناميكية -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">تحديث الوصف التفصيلي:</label>
+                    <textarea id="newDesc" rows="3" class="w-full p-3 border border-slate-300 rounded-xl text-sm" placeholder="اكتب الوصف التفصيلي..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">📁 رفع صور جديدة لمعرض البطاقة:</label>
+                    <input type="file" id="newImageUploader" accept="image/*" multiple class="w-full p-2 border border-slate-300 rounded-xl text-sm bg-slate-50 cursor-pointer">
+                </div>
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-1 font-bold">الصور الحالية في المعرض:</p>
+                    <div id="previewGalleryList" class="grid grid-cols-3 gap-2"></div>
+                </div>
+                <button onclick="updateExistingItem()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition mt-4">
+                    ✨ حفظ التعديلات وإضافة الصور للمعرض
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة حذف عنصر -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl text-right">
+            <button onclick="closeDeleteModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
+            <h3 class="text-xl font-black text-red-600 mb-4 border-b pb-2">🗑 حذف عنصر من الموقع</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">اختر العنصر المراد حذفه:</label>
+                    <select id="deleteSelect" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800">
+                        <!-- تعبئة ديناميكية -->
+                    </select>
+                </div>
+                <button onclick="deleteItem()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow transition">
+                    ⚠ تأكيد الحذف نهائياً
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر الواتساب العائم -->
+    <a href="https://wa.me/966539356009" target="_blank" class="whatsapp-float">
+        <span class="text-xl">💬</span> راسل المبيعات
+    </a>
+
+    <!-- تذييل الصفحة -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 border-t border-slate-800 text-sm">
+        جميع الحقوق محفوظة © شركة طوارئ الخليج 2026
+    </footer>
+
+    <script>
+        let dbData = {
+            alarm: {
+                title: "أنظمة الكشف والإنذار عن الحريق",
+                desc: "تقديم خدمات متكاملة لتوريد وتركيب وتشغيل وصيانة جميع أنظمة الكشف والإنذار المبكر طبقاً لأعلى المعايير الهندسية ومعايير الدفاع المدني.",
+                img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            fighting: {
+                title: "أنظمة مكافحة الحريق",
+                desc: "نقدم حلولاً معتمدة لمكافحة الحريق والوقاية منه (شبكات الرش الآلي، طفايات الحريق، مضخات الحريق) وفق المواصفات العالمية.",
+                img: "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            maintenance: {
+                title: "صيانة وتشغيل الأنظمة",
+                desc: "أعمال الصيانة الدورية والشاملة لأنظمة الإنذار ومكافحة الحريق مع تقديم شهادات الفحص المعتمدة للجهات الحكومية والخاصة.",
+                img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            gov: {
+                title: "القطاعات الحكومية والعسكرية",
+                desc: "نفذت الشركة مشاريع حيوية كبرى للجهات الحكومية والعسكرية بأعلى درجات الموثوقية والأمان الفني.",
+                img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            edu: {
+                title: "القطاع التعليمي والتدريبي",
+                desc: "تنفيذ وتطوير شبكات الإنذار ومكافحة الحريق في كبرى الجامعات والكليات والمدارس.",
+                img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            mall: {
+                title: "المراكز التجارية والمولات",
+                desc: "توريد وتركيب وصيانة أنظمة السلامة المتكاملة للمراكز التجارية الكبرى والأسواق المركزية.",
+                img: "https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80"
+                ]
+            }
+        };
+
+        let tempGalleryImages = [];
+
+        function updateDateTime() {
+            const now = new Date();
+            let optionsGregorian = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('gregorianDateDisplay').innerText = "🗓️ " + now.toLocaleDateString('ar-SA', optionsGregorian);
+
+            try {
+                let optionsHijri = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
+                let hijriStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', optionsHijri).format(now);
+                document.getElementById('hijriDateDisplay').innerText = "🌙 " + hijriStr;
+            } catch (e) {
+                document.getElementById('hijriDateDisplay').innerText = "🌙 التقويم الهجري غير متوفر";
+            }
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        function toggleAudio() {
+            let audio = document.getElementById('quranAudio');
+            let btn = document.getElementById('audioToggleBtn');
+            let statusText = document.getElementById('audioStatusText');
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btn.innerText = "⏸";
+                    statusText.innerText = "تعمل سورة البقرة 🎧";
+                    statusText.className = "text-xs text-emerald-400 font-bold";
+                }).catch(err => {
+                    alert("تعذر تشغيل الصوت تلقائياً، يرجى النقر مرة أخرى على زر التشغيل.");
+                });
+            } else {
+                audio.pause();
+                btn.innerText = "▶";
+                statusText.innerText = "متوقف مؤقتاً";
+                statusText.className = "text-xs text-slate-300 font-bold";
+            }
+        }
+
+        function checkPassword() {
+            let pass = prompt("أدخل الرقم السري للوصول إلى لوحة التحكم:");
+            if (pass === "2026") {
+                toggleDropdown();
+            } else if (pass !== null) {
+                alert("الرقم السري غير صحيح!");
+            }
+        }
+
+        function toggleDropdown() {
+            let drop = document.getElementById('adminDropdown');
+            drop.classList.toggle('hidden');
+        }
+
+        function renderUI() {
+            let servicesHTML = '';
+            for (let key in dbData) {
+                let item = dbData[key];
+                servicesHTML += `
+                    <div onclick="openDetailsModal('${key}')" class="bg-white rounded-2xl shadow-sm border border-slate-200 card-hover flex flex-col justify-between border-t-4 border-t-red-600 overflow-hidden">
+                        <div>
+                            <img src="${item.img}" alt="${item.title}" class="w-full h-44 object-cover border-b border-slate-100">
+                            <div class="p-6">
+                                <h3 class="font-extrabold text-lg text-slate-800 mb-2">${item.title}</h3>
+                                <p class="text-slate-600 text-sm leading-relaxed line-clamp-2">${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-4 flex justify-between items-center text-xs font-bold">
+                            <span class="text-red-600 bg-red-50 px-3 py-1 rounded-full">📁 معرض الصور (${item.gallery.length})</span>
+                            <span class="text-slate-400">اضغط للعرض ←</span>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('servicesContainer').innerHTML = servicesHTML;
+        }
+
+        function openDetailsModal(key) {
+            let item = dbData[key];
+            if(!item) return;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDesc').innerText = item.desc;
+
+            let galleryHTML = '';
+            item.gallery.forEach(imgUrl => {
+                galleryHTML += `
+                    <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+                        <img src="${imgUrl}" alt="صورة المشروع" class="w-full h-48 object-cover hover:scale-105 transition duration-300">
+                    </div>
+                `;
+            });
+            document.getElementById('modalGallery').innerHTML = galleryHTML;
+
+            let modal = document.getElementById('detailsModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDetailsModal() {
+            let modal = document.getElementById('detailsModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function openNewItemModal() {
+            toggleDropdown();
+            let titleSelect = document.getElementById('newTitleSelect');
+            titleSelect.innerHTML = '';
+            for (let key in dbData) {
+                let opt = document.createElement('option');
+                opt.value = key;
+                opt.text = dbData[key].title;
+                titleSelect.appendChild(opt);
+            }
+            loadItemData();
+            let modal = document.getElementById('newItemModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function loadItemData() {
+            let selectedKey = document.getElementById('newTitleSelect').value;
+            if(selectedKey && dbData[selectedKey]) {
+                let item = dbData[selectedKey];
+                document.getElementById('newDesc').value = item.desc;
+                tempGalleryImages = [...item.gallery];
+                renderPreviewGallery();
+                document.getElementById('newImageUploader').value = '';
+            }
+        }
+
+        function renderPreviewGallery() {
+            let container = document.getElementById('previewGalleryList');
+            container.innerHTML = '';
+            tempGalleryImages.forEach((img, idx) => {
+                container.innerHTML += `
+                    <div class="relative rounded-lg overflow-hidden border h-20">
+                        <img src="${img}" class="w-full h-full object-cover">
+                        <button onclick="removeGalleryImg(${idx})" class="absolute top-1 left-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">&times;</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeGalleryImg(index) {
+            tempGalleryImages.splice(index, 1);
+            renderPreviewGallery();
+        }
+
+        function closeNewItemModal() {
+            let modal = document.getElementById('newItemModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        document.getElementById('newImageUploader').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                for(let i = 0; i < files.length; i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        tempGalleryImages.push(event.target.result);
+                        renderPreviewGallery();
+                    }
+                    reader.readAsDataURL(files[i]);
+                }
+            }
+        });
+
+        function updateExistingItem() {
+            let selectedKey = document.getElementById('newTitleSelect').value;
+            let desc = document.getElementById('newDesc').value;
+            if(!desc) {
+                alert("يرجى إدخال الوصف التفصيلي");
+                return;
+            }
+            if(dbData[selectedKey]) {
+                dbData[selectedKey].desc = desc;
+                dbData[selectedKey].gallery = [...tempGalleryImages];
+                if(tempGalleryImages.length > 0) {
+                    dbData[selectedKey].img = tempGalleryImages[0];
+                }
+            }
+            closeNewItemModal();
+            renderUI();
+            alert("تم حفظ التعديلات وتحديث معرض الصور للبطاقة بنجاح!");
+        }
+
+        function openDeleteModal() {
+            toggleDropdown();
+            let select = document.getElementById('deleteSelect');
+            select.innerHTML = '';
+            for (let key in dbData) {
+                let opt = document.createElement('option');
+                opt.value = key;
+                opt.text = dbData[key].title;
+                select.appendChild(opt);
+            }
+            let modal = document.getElementById('deleteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            let modal = document.getElementById('deleteModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function deleteItem() {
+            let key = document.getElementById('deleteSelect').value;
+            if(key && dbData[key]) {
+                delete dbData[key];
+                closeDeleteModal();
+                renderUI();
+                alert("تم حذف العنصر بنجاح!");
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                let drop = document.getElementById('adminDropdown');
+                if(drop) drop.classList.add('hidden');
+            }
+            if (event.target.id === 'newItemModal') closeNewItemModal();
+            if (event.target.id === 'deleteModal') closeDeleteModal();
+            if (event.target.id === 'detailsModal') closeDetailsModal();
+        }
+
+        renderUI();
+    </script>
+</body>
+</html>
