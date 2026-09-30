@@ -42,14 +42,6 @@
             background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
             border-bottom: 5px solid #dc2626;
         }
-        .card-hover {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
         .whatsapp-float {
             position: fixed;
             bottom: 20px;
@@ -69,9 +61,18 @@
         .whatsapp-float:hover {
             transform: scale(1.05);
         }
-        /* موضع زر الواتساب حسب اتجاه الصفحة */
         html[dir="rtl"] .whatsapp-float { left: 20px; }
         html[dir="ltr"] .whatsapp-float { right: 20px; }
+        
+        .accordion-item {
+            transition: all 0.3s ease;
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .accordion-item.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -87,7 +88,6 @@
     <header class="header-bg text-white py-6 px-4 shadow-md relative">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             
-            <!-- زر تبديل اللغة والتاريخ -->
             <div class="flex flex-col md:flex-row items-center gap-3">
                 <button onclick="toggleLanguage()" id="langBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-black shadow transition flex items-center gap-2">
                     🌐 English / عربي
@@ -97,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- الشعار واسم الشركة -->
             <div class="flex items-center gap-3 text-center md:text-right">
                 <div>
                     <h1 id="companyName" class="text-2xl md:text-3xl font-black tracking-wide">شركة طوارئ الخليج</h1>
@@ -108,7 +107,6 @@
                 </div>
             </div>
 
-            <!-- مشغل سورة البقرة -->
             <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 flex items-center gap-3">
                 <div class="text-right" id="audioTextContainer">
                     <span id="audioTitleLabel" class="text-xs text-slate-300 block font-bold">تشغيل سورة البقرة</span>
@@ -120,7 +118,6 @@
             </div>
         </div>
 
-        <!-- لوحة التحكم الإدارية -->
         <div class="text-center mt-6">
             <div class="relative inline-block text-right" id="adminDropdownWrapper">
                 <button onclick="checkPassword()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-xl shadow transition text-xs flex items-center gap-2">
@@ -128,25 +125,25 @@
                 </button>
                 <div id="adminDropdown" class="hidden absolute mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-slate-800">
                     <button onclick="openNewItemModal()" id="adminOpt1" class="w-full px-4 py-3 text-xs font-bold hover:bg-slate-100 flex items-center gap-2 border-b">
-                        <span>➕</span> إضافة صور ومعرض للبطاقة
+                        <span>➕</span> إضافة صور وتعديل القائمة
                     </button>
-                    <button onclick="openDeleteModal()" id="adminOpt2" class="w-full px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2">
-                        <span>🗑️</span> حذف عنصر
+                    <button onclick="openDeleteModal()" id="adminOpt2" class="w-full px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 border-b">
+                        <span>🗑️</span> حذف عنصر من القائمة
+                    </button>
+                    <button onclick="resetDefaultData()" class="w-full px-4 py-3 text-xs font-bold text-amber-600 hover:bg-amber-50 flex items-center gap-2">
+                        <span>🔄</span> استعادة البيانات الافتراضية
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- عنصر الصوت -->
     <audio id="quranAudio" loop preload="auto">
         <source src="https://server11.mp3quran.net/sds/002.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+    <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
         
-        <!-- نبذة عن الشركة -->
         <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 mb-10">
             <h2 id="aboutTitle" class="text-2xl font-black text-slate-800 mb-4 text-center flex items-center justify-center gap-2">
                 <span>🛡️</span> نبذة عن الشركة
@@ -156,17 +153,14 @@
             </p>
         </section>
 
-        <!-- قسم خدماتنا والبطاقات التفاعلية -->
+        <!-- القائمة التفاعلية المحدثة -->
         <section class="mb-10">
-            <h2 id="servicesHeading" class="text-2xl font-black text-slate-800 mb-2 text-center">⚙️ خدماتنا والأنظمة المعتمدة للشركة</h2>
-            <p id="servicesSub" class="text-slate-500 text-center mb-6 text-sm">اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل</p>
+            <h2 id="servicesHeading" class="text-2xl font-black text-slate-800 mb-2 text-center">⚙ خدماتنا والأنظمة المعتمدة للشركة</h2>
+            <p id="servicesSub" class="text-slate-500 text-center mb-6 text-sm">اضغط على أي عنصر في القائمة لعرض التفاصيل ومعرض الصور المرفقة</p>
             
-            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- تعبئة ديناميكية -->
-            </div>
+            <div id="accordionContainer" class="space-y-4"></div>
         </section>
 
-        <!-- قسم التواصل السريع -->
         <section class="bg-slate-900 text-white rounded-2xl p-8 text-center shadow-sm relative overflow-hidden">
             <div class="relative z-10">
                 <h3 id="contactHeading" class="text-2xl font-black mb-3 text-red-500">📞 تواصل مع قسم المبيعات مباشرة</h3>
@@ -186,28 +180,20 @@
 
     </main>
 
-    <!-- نافذة تفاصيل البطاقة -->
-    <div id="detailsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div id="modalContentBox" class="bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
-            <button onclick="closeDetailsModal()" class="absolute top-4 font-bold text-3xl text-slate-400 hover:text-slate-700" id="modalCloseBtn">&times;</button>
-            <h2 id="modalTitle" class="text-2xl font-black text-slate-800 mb-3 border-b pb-2 text-red-600">عنوان الخدمة</h2>
-            <p id="modalDesc" class="text-slate-600 mb-6 leading-relaxed font-medium">وصف تفصيلي للخدمة...</p>
-            
-            <h3 id="modalGalleryTitle" class="font-extrabold text-lg text-slate-800 mb-3 flex items-center gap-2">
-                <span>🖼</span> معرض صور المشاريع والأعمال المعتمدة:
-            </h3>
-            <div id="modalGallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-        </div>
+    <!-- نافذة تكبير الصورة (Lightbox) -->
+    <div id="imageLightbox" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[100] p-4 cursor-pointer" onclick="closeLightbox()">
+        <button onclick="closeLightbox()" class="absolute top-6 left-6 text-white text-4xl font-bold hover:text-red-500 z-10">&times;</button>
+        <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl border border-white/10" alt="صورة مكبرة">
     </div>
 
-    <!-- نافذة لوحة التحكم -->
+    <!-- نافذة لوحة التحكم للإضافة والتعديل -->
     <div id="newItemModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right">
             <button onclick="closeNewItemModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
-            <h3 class="text-xl font-black text-slate-800 mb-4 border-b pb-2">➕ إضافة صور وتحديث تفاصيل البطاقة</h3>
+            <h3 class="text-xl font-black text-slate-800 mb-4 border-b pb-2">➕ إضافة صور وتعديل التفاصيل القائمة</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">اختر البطاقة / الأيقونة:</label>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">اختر عنصر القائمة:</label>
                     <select id="newTitleSelect" onchange="loadItemData()" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800 bg-white"></select>
                 </div>
                 <div>
@@ -215,15 +201,15 @@
                     <textarea id="newDesc" rows="3" class="w-full p-3 border border-slate-300 rounded-xl text-sm" placeholder="اكتب الوصف التفصيلي..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">📁 رفع صور جديدة لمعرض البطاقة:</label>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">📁 رفع صور جديدة للعنصر:</label>
                     <input type="file" id="newImageUploader" accept="image/*" multiple class="w-full p-2 border border-slate-300 rounded-xl text-sm bg-slate-50 cursor-pointer">
                 </div>
                 <div class="text-center">
-                    <p class="text-xs text-slate-500 mb-1 font-bold">الصور الحالية في المعرض:</p>
+                    <p class="text-xs text-slate-500 mb-1 font-bold">الصور الحالية لهذا العنصر:</p>
                     <div id="previewGalleryList" class="grid grid-cols-3 gap-2"></div>
                 </div>
                 <button onclick="updateExistingItem()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition mt-4">
-                    ✨ حفظ التعديلات وإضافة الصور للمعرض
+                    ✨ حفظ التعديلات وإضافة الصور للقائمة
                 </button>
             </div>
         </div>
@@ -233,11 +219,11 @@
     <div id="deleteModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl text-right">
             <button onclick="closeDeleteModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700 font-bold text-3xl">&times;</button>
-            <h3 class="text-xl font-black text-red-600 mb-4 border-b pb-2">🗑 حذف عنصر من الموقع</h3>
+            <h3 class="text-xl font-black text-red-600 mb-4 border-b pb-2">🗑 حذف عنصر من القائمة</h3>
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">اختر العنصر المراد حذفه:</label>
-                    <select id="deleteSelect" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800"></select>
+                    <select id="deleteSelect" class="w-full p-3 border border-slate-300 rounded-xl font-bold text-slate-800 bg-white"></select>
                 </div>
                 <button onclick="deleteItem()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow transition">
                     ⚠ تأكيد الحذف نهائياً
@@ -246,12 +232,10 @@
         </div>
     </div>
 
-    <!-- زر الواتساب العائم -->
     <a href="https://wa.me/966539356009" target="_blank" class="whatsapp-float">
         <span class="text-xl">💬</span> <span id="whatsappFloatText">راسل المبيعات</span>
     </a>
 
-    <!-- تذييل الصفحة -->
     <footer id="footerText" class="bg-slate-900 text-slate-400 text-center py-4 border-t border-slate-800 text-sm">
         جميع الحقوق محفوظة © شركة طوارئ الخليج 2026
     </footer>
@@ -270,20 +254,19 @@
                 audioStatusRun: "تعمل سورة البقرة 🎧",
                 audioStatusPause: "متوقف مؤقتاً",
                 adminBtnText: "🔒 خيارات الإدارة والتحكم (محمي برقم سري) ▼",
-                adminOpt1: "➕ إضافة صور ومعرض للبطاقة",
-                adminOpt2: "🗑️ حذف عنصر",
+                adminOpt1: "➕ إضافة صور وتعديل القائمة",
+                adminOpt2: "🗑️ حذف عنصر من القائمة",
                 aboutTitle: "نبذة عن الشركة",
                 aboutDesc: "تأسست شركة طوارئ الخليج في الرياض عام 2018، وهي رائدة في تقديم حلول الأمن والسلامة، توريد وتركيب وصيانة أنظمة الإنذار ومكافحة الحريق بأعلى معايير الجودة والكفاءة الفنية.",
-                servicesHeading: "⚙️ خدماتنا والأنظمة المعتمدة للشركة",
-                servicesSub: "اضغط على أي بطاقة لاستعراض التفاصيل ومعرض الصور الكامل",
+                servicesHeading: "⚙ خدماتنا والأنظمة المعتمدة للشركة",
+                servicesSub: "اضغط على أي عنصر في القائمة لعرض التفاصيل ومعرض الصور المرفقة",
                 contactHeading: "📞 تواصل مع قسم المبيعات مباشرة",
                 contactSub: "نحن جاهزون للإجابة على استفساراتكم وتقديم أفضل العروض الهندسية لمشاريعكم",
                 salesPersonTitle: "مسؤول المبيعات",
                 whatsappBtnText: "راسلنا عبر الواتساب فوراً",
                 whatsappFloatText: "راسل المبيعات",
                 footerText: "جميع الحقوق محفوظة © شركة طوارئ الخليج 2026",
-                galleryLabel: "معرض الصور",
-                clickToView: "اضغط للعرض ←"
+                galleryLabel: "معرض الصور المرفقة"
             },
             en: {
                 pageTitle: "Gulf Emergency Safety & Security Co.",
@@ -295,88 +278,113 @@
                 audioStatusRun: "Playing Surah Al-Baqarah 🎧",
                 audioStatusPause: "Paused",
                 adminBtnText: "🔒 Admin & Control Options (Password Protected) ▼",
-                adminOpt1: "➕ Add Images & Gallery to Card",
+                adminOpt1: "➕ Add Images & Edit Menu",
                 adminOpt2: "🗑️ Delete Item",
                 aboutTitle: "About The Company",
                 aboutDesc: "Gulf Emergency Company was established in Riyadh in 2018, leading in safety and security solutions, supplying, installing, and maintaining fire alarm and suppression systems with the highest quality standards.",
-                servicesHeading: "⚙️ Our Services & Approved Systems",
-                servicesSub: "Click on any card to view details and full project gallery",
+                servicesHeading: "⚙️️ Our Services & Approved Systems",
+                servicesSub: "Click any item in the list to expand details and photo gallery",
                 contactHeading: "📞 Contact Sales Department Directly",
                 contactSub: "We are ready to answer your inquiries and provide the best engineering offers for your projects",
                 salesPersonTitle: "Sales Representative",
                 whatsappBtnText: "Chat via WhatsApp Now",
                 whatsappFloatText: "Contact Sales",
                 footerText: "All Rights Reserved © Gulf Emergency Company 2026",
-                galleryLabel: "Photo Gallery",
-                clickToView: "Click to View →"
+                galleryLabel: "Attached Photo Gallery"
             }
         };
 
-        let dbData = {
-            alarm: {
-                title: { ar: "أنظمة الكشف والإنذار عن الحريق", en: "Fire Detection & Alarm Systems" },
+        // القائمة مضافة إليها قسم "مشاريعنا" بالترتيب المناسب
+        const defaultDbData = {
+            item1: {
+                title: { ar: "توريد وتركيب انظمه الحريق والانذار", en: "Supply & Installation of Fire & Alarm Systems" },
                 desc: { 
-                    ar: "تقديم خدمات متكاملة لتوريد وتركيب وتشغيل وصيانة جميع أنظمة الكشف والإنذار المبكر طبقاً لأعلى المعايير الهندسية ومعايير الدفاع المدني.",
-                    en: "Providing integrated services for supply, installation, operation and maintenance of all early detection and alarm systems according to the highest engineering and civil defense standards."
+                    ar: "توريد وتركيب وتشغيل جميع أنظمة الكشف والإنذار المبكر ومعدات ومضخات مكافحة الحريق بأعلى معايير الجودة والكفاءة الهندسية المعتمدة.",
+                    en: "Supply, installation and operation of all early detection, alarm systems and fire fighting equipment with approved quality standards."
                 },
-                img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
                 gallery: [
                     "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
                     "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
                 ]
             },
-            fighting: {
-                title: { ar: "أنظمة مكافحة الحريق", en: "Fire Suppression Systems" },
+            item2: {
+                title: { ar: "تسليم دفاع مدني", en: "Civil Defense Handover" },
                 desc: {
-                    ar: "نقدم حلولاً معتمدة لمكافحة الحريق والوقاية منه (شبكات الرش الآلي، طفايات الحريق، مضخات الحريق) وفق المواصفات العالمية.",
-                    en: "Offering certified solutions for fire fighting and prevention (sprinkler networks, fire extinguishers, fire pumps) in accordance with international specifications."
+                    ar: "إتمام كافة إجراءات واشتراطات الدفاع المدني واستخراج رخص السلامة وإنهاء المعاملات الحكومية للمشاريع باحترافية تامة.",
+                    en: "Completing all civil defense procedures and requirements, issuing safety licenses, and finalizing government transactions."
                 },
-                img: "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
                 gallery: [
-                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            item3: {
+                title: { ar: "عقود صيانه سنويه", en: "Annual Maintenance Contracts" },
+                desc: {
+                    ar: "توفير عقود صيانة دورية وسنوية معتمدة لأنظمة الإنذار ومكافحة الحريق لضمان الجاهزية التامة طوال العام مع زيارات فحص منتظمة.",
+                    en: "Providing certified annual and periodic maintenance contracts for alarm and fire fighting systems."
+                },
+                gallery: [
                     "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
                 ]
             },
-            maintenance: {
-                title: { ar: "صيانة وتشغيل الأنظمة", en: "Systems Maintenance & Operation" },
+            item4: {
+                title: { ar: "تصميم واعتماد مخططات السلامه", en: "Safety Plans Design & Approval" },
                 desc: {
-                    ar: "أعمال الصيانة الدورية والشاملة لأنظمة الإنذار ومكافحة الحريق مع تقديم شهادات الفحص المعتمدة للجهات الحكومية والخاصة.",
-                    en: "Periodic and comprehensive maintenance works for alarm and fire fighting systems with approved inspection certificates for government and private entities."
+                    ar: "تصميم مخططات الأمن والسلامة الهندسية طبقاً لكود البناء السعودي واعتمادها رسمياً من الجهات المختصة والمعتمدة.",
+                    en: "Designing security and safety engineering plans in accordance with the Saudi Building Code and officially approving them."
                 },
-                img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
                 gallery: [
-                    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80"
+                    "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80"
                 ]
             },
-            gov: {
-                title: { ar: "القطاعات الحكومية والعسكرية", en: "Government & Military Sectors" },
+            item5: {
+                title: { ar: "مشاريعنا", en: "Our Projects" },
                 desc: {
-                    ar: "نفذت الشركة مشاريع حيوية كبرى للجهات الحكومية والعسكرية بأعلى درجات الموثوقية والأمان الفني.",
-                    en: "The company has executed major vital projects for government and military authorities with the highest degrees of reliability and technical safety."
+                    ar: "استعراض أبرز المشاريع والنجاحات التي نفذتها شركة طوارئ الخليج في قطاعات الأمن والسلامة ومكافحة الحريق بمختلف مناطق المملكة.",
+                    en: "Showcasing major projects and successes implemented by Gulf Emergency Company across various sectors."
                 },
-                img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-                gallery: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"]
+                gallery: [
+                    "https://images.unsplash.com/photo-1541888946425-d0fbb18f248e?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80"
+                ]
             },
-            edu: {
-                title: { ar: "القطاع التعليمي والتدريبي", en: "Educational & Training Sector" },
+            item6: {
+                title: { ar: "الرفع المساحي والمعماري بالتعاون مع مكتب مناره الديار", en: "Surveying & Architectural Services with Manarat Al-Diyar Office" },
                 desc: {
-                    ar: "تنفيذ وتطوير شبكات الإنذار ومكافحة الحريق في كبرى الجامعات والكليات والمدارس.",
-                    en: "Implementing and developing alarm and fire fighting networks in major universities, colleges, and schools."
+                    ar: "تقديم خدمات الرفع المساحي والمعماري بدقة عالية بالتنسيق والشراكة الهندسية الكاملة مع مكتب مناره الديار.",
+                    en: "High-precision architectural and surveying services in full coordination and partnership with Manarat Al-Diyar engineering office."
                 },
-                img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80",
-                gallery: ["https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80"]
+                gallery: [
+                    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80"
+                ]
             },
-            mall: {
-                title: { ar: "المراكز التجارية والمولات", en: "Commercial Centers & Malls" },
+            item7: {
+                title: { ar: "تقارير فوريه وغير فوريه", en: "Immediate & Scheduled Reports" },
                 desc: {
-                    ar: "توريد وتركيب وصيانة أنظمة السلامة المتكاملة للمراكز التجارية الكبرى والأسواق المركزية.",
-                    en: "Supply, installation and maintenance of integrated safety systems for major commercial centers and hypermarkets."
+                    ar: "إصدار تقارير هندسية مفصلة وفورية وغير فورية لحالة أنظمة السلامة والفحص الفني المعتمد للمنشآت.",
+                    en: "Issuing detailed immediate and scheduled engineering reports on the status of safety systems."
                 },
-                img: "https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80",
-                gallery: ["https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=600&q=80"]
+                gallery: [
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            item8: {
+                title: { ar: "شهادات السلامه وانهاء التركيبات", en: "Safety Certificates & Installation Completion" },
+                desc: {
+                    ar: "إنجاز وإنهاء كافة التركيبات الهندسية واصدار شهادات السلامة النهائية المعتمدة للمنشآت والمباني.",
+                    en: "Completing all engineering installations and issuing final approved safety certificates for facilities."
+                },
+                gallery: [
+                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
+                ]
             }
         };
+
+        let dbData = JSON.parse(localStorage.getItem('gulfEmergencyDataList')) || defaultDbData;
+
+        function saveToLocalStorage() {
+            localStorage.setItem('gulfEmergencyDataList', JSON.stringify(dbData));
+        }
 
         let tempGalleryImages = [];
 
@@ -386,19 +394,15 @@
             root.setAttribute('lang', currentLang);
             root.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
 
-            // تعديل مكان محاذاة القوائم المنسدلة بناء على اللغة
             const dropdown = document.getElementById('adminDropdown');
-            const modalContentBox = document.getElementById('modalContentBox');
             if (currentLang === 'ar') {
                 dropdown.className = "hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-right text-slate-800";
-                modalContentBox.className = "bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-right";
             } else {
                 dropdown.className = "hidden absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden text-left text-slate-800";
-                modalContentBox.className = "bg-white rounded-2xl max-w-3xl w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto text-left";
             }
 
             updateStaticTexts();
-            renderUI();
+            renderAccordionUI();
         }
 
         function updateStaticTexts() {
@@ -468,59 +472,83 @@
             drop.classList.toggle('hidden');
         }
 
-        function renderUI() {
-            let servicesHTML = '';
+        // بناء القائمة التفاعلية (Accordion)
+        function renderAccordionUI() {
+            let container = document.getElementById('accordionContainer');
+            let accordionHTML = '';
             const t = translations[currentLang];
+
+            let index = 1;
             for (let key in dbData) {
                 let item = dbData[key];
                 let title = item.title[currentLang];
                 let desc = item.desc[currentLang];
-                servicesHTML += `
-                    <div onclick="openDetailsModal('${key}')" class="bg-white rounded-2xl shadow-sm border border-slate-200 card-hover flex flex-col justify-between border-t-4 border-t-red-600 overflow-hidden">
-                        <div>
-                            <img src="${item.img}" alt="${title}" class="w-full h-44 object-cover border-b border-slate-100">
-                            <div class="p-6">
-                                <h3 class="font-extrabold text-lg text-slate-800 mb-2">${title}</h3>
-                                <p class="text-slate-600 text-sm leading-relaxed line-clamp-2">${desc}</p>
+
+                let galleryHTML = '';
+                if(item.gallery && item.gallery.length > 0) {
+                    item.gallery.forEach(imgUrl => {
+                        galleryHTML += `
+                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white cursor-pointer group" onclick="openLightbox('${imgUrl}')">
+                                <img src="${imgUrl}" alt="${title}" class="w-full h-40 object-cover group-hover:scale-105 transition duration-300">
+                            </div>
+                        `;
+                    });
+                } else {
+                    galleryHTML = `<p class="text-xs text-slate-400 italic col-span-full">${currentLang === 'ar' ? 'لا توجد صور مضافة لهذا العنصر حالياً' : 'No images added for this item yet'}</p>`;
+                }
+
+                accordionHTML += `
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden accordion-item" id="accordion-item-${key}">
+                        <button onclick="toggleAccordion('${key}')" class="w-full px-6 py-5 text-right flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition font-extrabold text-slate-800 text-base md:text-lg border-b border-transparent">
+                            <span class="flex items-center gap-3">
+                                <span class="w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-black shadow-sm">${index}</span>
+                                <span>${title}</span>
+                            </span>
+                            <span class="text-red-600 font-bold text-xl accordion-arrow">▼</span>
+                        </button>
+                        <div id="accordion-body-${key}" class="hidden p-6 bg-white border-t border-slate-100">
+                            <p class="text-slate-600 font-medium text-sm md:text-base mb-4 leading-relaxed">${desc}</p>
+                            <div class="mt-4">
+                                <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1">
+                                    <span>🖼</span> ${t.galleryLabel}:
+                                </h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                    ${galleryHTML}
+                                </div>
                             </div>
                         </div>
-                        <div class="px-6 pb-4 flex justify-between items-center text-xs font-bold">
-                            <span class="text-red-600 bg-red-50 px-3 py-1 rounded-full">📁 ${t.galleryLabel} (${item.gallery.length})</span>
-                            <span class="text-slate-400">${t.clickToView}</span>
-                        </div>
                     </div>
                 `;
+                index++;
             }
-            document.getElementById('servicesContainer').innerHTML = servicesHTML;
+            container.innerHTML = accordionHTML;
         }
 
-        function openDetailsModal(key) {
-            let item = dbData[key];
-            if(!item) return;
-            const t = translations[currentLang];
-            document.getElementById('modalTitle').innerText = item.title[currentLang];
-            document.getElementById('modalDesc').innerText = item.desc[currentLang];
-            document.getElementById('modalGalleryTitle').innerHTML = `<span>🖼</span> ${t.galleryLabel}:`;
-
-            let galleryHTML = '';
-            item.gallery.forEach(imgUrl => {
-                galleryHTML += `
-                    <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
-                        <img src="${imgUrl}" alt="Project Image" class="w-full h-48 object-cover hover:scale-105 transition duration-300">
-                    </div>
-                `;
-            });
-            document.getElementById('modalGallery').innerHTML = galleryHTML;
-
-            let modal = document.getElementById('detailsModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        function toggleAccordion(key) {
+            let body = document.getElementById(`accordion-body-${key}`);
+            let item = document.getElementById(`accordion-item-${key}`);
+            
+            if (body.classList.contains('hidden')) {
+                body.classList.remove('hidden');
+                item.classList.add('active');
+            } else {
+                body.classList.add('hidden');
+                item.classList.remove('active');
+            }
         }
 
-        function closeDetailsModal() {
-            let modal = document.getElementById('detailsModal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
+        function openLightbox(imgUrl) {
+            let lightbox = document.getElementById('imageLightbox');
+            let lightboxImg = document.getElementById('lightboxImg');
+            lightboxImg.src = imgUrl;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            let lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.remove('flex');
+            lightbox.classList.add('hidden');
         }
 
         function openNewItemModal() {
@@ -544,7 +572,7 @@
             if(selectedKey && dbData[selectedKey]) {
                 let item = dbData[selectedKey];
                 document.getElementById('newDesc').value = item.desc[currentLang];
-                tempGalleryImages = [...item.gallery];
+                tempGalleryImages = [...(item.gallery || [])];
                 renderPreviewGallery();
                 document.getElementById('newImageUploader').value = '';
             }
@@ -598,13 +626,12 @@
             if(dbData[selectedKey]) {
                 dbData[selectedKey].desc[currentLang] = desc;
                 dbData[selectedKey].gallery = [...tempGalleryImages];
-                if(tempGalleryImages.length > 0) {
-                    dbData[selectedKey].img = tempGalleryImages[0];
-                }
+                saveToLocalStorage();
             }
             closeNewItemModal();
-            renderUI();
-            alert(currentLang === 'ar' ? "تم حفظ التعديلات وتحديث معرض الصور للبطاقة بنجاح!" : "Changes saved successfully!");
+            renderAccordionUI();
+            toggleAccordion(selectedKey);
+            alert(currentLang === 'ar' ? "تم حفظ وتحديث الصور والبيانات للقائمة بنجاح!" : "Changes saved successfully!");
         }
 
         function openDeleteModal() {
@@ -632,9 +659,20 @@
             let key = document.getElementById('deleteSelect').value;
             if(key && dbData[key]) {
                 delete dbData[key];
+                saveToLocalStorage();
                 closeDeleteModal();
-                renderUI();
+                renderAccordionUI();
                 alert(currentLang === 'ar' ? "تم حذف العنصر بنجاح!" : "Item deleted successfully!");
+            }
+        }
+
+        function resetDefaultData() {
+            toggleDropdown();
+            if (confirm(currentLang === 'ar' ? "هل أنت متأكد من استعادة القائمة الافتراضية وحذف التعديلات السابقة؟" : "Reset default data?")) {
+                localStorage.removeItem('gulfEmergencyDataList');
+                dbData = JSON.parse(JSON.stringify(defaultDbData));
+                renderAccordionUI();
+                alert(currentLang === 'ar' ? "تمت استعادة القائمة الافتراضية بنجاح." : "Restored default data successfully.");
             }
         }
 
@@ -645,10 +683,9 @@
             }
             if (event.target.id === 'newItemModal') closeNewItemModal();
             if (event.target.id === 'deleteModal') closeDeleteModal();
-            if (event.target.id === 'detailsModal') closeDetailsModal();
         }
 
-        renderUI();
+        renderAccordionUI();
     </script>
 </body>
 </html>
